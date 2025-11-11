@@ -1,3 +1,4 @@
+import requests
 import streamlit as st
 from datetime import datetime
 
@@ -8,6 +9,32 @@ st.set_page_config(
     layout="centered",
     initial_sidebar_state="collapsed"
 )
+def increment_and_get_views():
+    try:
+        res = requests.get("https://api.counterapi.dev/v1/my-world-beside-me/views/up")
+        if res.status_code == 200:
+            data = res.json()
+            return data.get("count", 0)
+        else:
+            return 0
+    except Exception as e:
+        print("Counter API error:", e)
+        return 0
+
+    
+views = increment_and_get_views()
+
+if views is not None:
+        st.markdown(
+            f"<p style='text-align:center;color:#9b8e7c;'>👁️ {views:,} visits</p>",
+            unsafe_allow_html=True
+        )
+else:
+        st.markdown(
+            "<p style='text-align:center;color:#9b8e7c;'>👁️ Visitors: —</p>",
+            unsafe_allow_html=True
+        )
+
 
 # --- Session state ---
 if "revealed_sections" not in st.session_state:
